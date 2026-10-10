@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123b70">
+  <title>INDO | Confirmação de saída</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      background: #f2f6fb;
+      color: #183451;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      padding: 36px 26px;
+      text-align: center;
+      background: #ffffff;
+      border-radius: 22px;
+      box-shadow: 0 8px 30px rgba(20, 55, 95, 0.10);
+    }
+
+    .door {
+      width: 76px;
+      height: 88px;
+      margin: 0 auto 12px;
+      position: relative;
+      perspective: 300px;
+    }
+
+    .door-frame {
+      position: absolute;
+      left: 12px;
+      bottom: 0;
+      width: 52px;
+      height: 82px;
+      border: 5px solid #163f75;
+      border-bottom: 0;
+      border-radius: 5px 5px 0 0;
+    }
+
+    .door-panel {
+      position: absolute;
+      left: 16px;
+      bottom: 0;
+      width: 43px;
+      height: 77px;
+      background: #2e75c7;
+      border-radius: 4px 4px 0 0;
+      transform: rotateY(-28deg);
+      transform-origin: left center;
+    }
+
+    .door-knob {
+      position: absolute;
+      right: 8px;
+      top: 43px;
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    h1 {
+      margin: 8px 0 5px;
+      color: #163f75;
+      font-size: 36px;
+      letter-spacing: 5px;
+    }
+
+    .subtitle {
+      margin: 0 0 28px;
+      color: #718096;
+      font-size: 13px;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .unit {
+      margin: 20px 0;
+      padding: 17px;
+      background: #f2f6fb;
+      border-radius: 12px;
+      font-size: 17px;
+    }
+
+    .unit strong {
+      display: block;
+      margin-top: 7px;
+      font-size: 26px;
+      color: #2368b5;
+    }
+
+    .description {
+      color: #64748b;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 18px;
+      padding: 17px 12px;
+      border: 0;
+      border-radius: 12px;
+      background: #2368b5;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background: #8aa9c9;
+      cursor: default;
+    }
+
+    #message {
+      margin-top: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .footer {
+      margin-top: 25px;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <div class="door" aria-hidden="true">
+      <div class="door-frame"></div>
+      <div class="door-panel">
+        <div class="door-knob"></div>
+      </div>
+    </div>
+
+    <h1>INDO</h1>
+    <p class="subtitle">Tecnologia para uma saída mais simples.</p>
+
+    <h2>Vai sair agora?</h2>
+    <p class="description">
+      Confirme sua saída para que nossa equipe possa
+      organizar a limpeza do apartamento.
+    </p>
+
+    <div class="unit">
+      Apartamento
+      <strong id="apartamento">Carregando...</strong>
+    </div>
+
+    <button id="confirmar" type="button">
+      Confirmar saída
+    </button>
+
+    <p id="message" role="status" aria-live="polite"></p>
+
+    <div class="footer">
+      INDO · Confirmação de saída
+    </div>
+  </main>
+
+  <script>
+    const parametros = new URLSearchParams(window.location.search);
+    const apartamento = parametros.get("apartamento");
+    const unidade = document.getElementById("apartamento");
+    const botao = document.getElementById("confirmar");
+    const mensagem = document.getElementById("message");
+
+    if (apartamento && /^[a-zA-Z0-9-]{1,20}$/.test(apartamento)) {
+      unidade.textContent = apartamento;
+    } else {
+      unidade.textContent = "Não identificado";
+      botao.disabled = true;
+      mensagem.textContent =
+        "Não foi possível identificar o apartamento.";
+    }
+
+    botao.addEventListener("click", function () {
+      mensagem.textContent =
+        "Esta é uma versão de teste. A confirmação ainda não foi enviada à equipe.";
+    });
+  </script>
+</body>
+</html>
