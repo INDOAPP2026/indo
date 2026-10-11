@@ -186,6 +186,9 @@
     const botao = document.getElementById("confirmar");
     const mensagem = document.getElementById("message");
 
+    // Número da CheckLimp com código do país Brasil.
+    const telefoneCheckLimp = "5511940064591";
+
     if (apartamento && /^[a-zA-Z0-9-]{1,20}$/.test(apartamento)) {
       unidade.textContent = apartamento;
     } else {
@@ -196,8 +199,26 @@
     }
 
     botao.addEventListener("click", function () {
+      if (!apartamento || !/^[a-zA-Z0-9-]{1,20}$/.test(apartamento)) {
+        mensagem.textContent =
+          "Não foi possível identificar o apartamento.";
+        return;
+      }
+
+      const texto =
+        "🚪 INDO - Saída confirmada!\n\n" +
+        "🏢 Apartamento: " + apartamento + "\n" +
+        "📋 Status: liberado para limpeza.\n" +
+        "📲 Aviso gerado pelo sistema INDO.";
+
+      const url =
+        "https://wa.me/" + telefoneCheckLimp +
+        "?text=" + encodeURIComponent(texto);
+
       mensagem.textContent =
-        "Esta é uma versão de teste. A confirmação ainda não foi enviada à equipe.";
+        "Abrindo o WhatsApp para enviar a confirmação...";
+
+      window.location.href = url;
     });
   </script>
 </body>
