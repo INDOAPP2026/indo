@@ -34,7 +34,7 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           from: "INDO <onboarding@resend.dev>",
-          to: ["contato.felipelinos@gmail.com"],
+          to: ["contato.felipelinos@gmail.com", "nanifisio32@gmail.com"],
           subject: `Checkout confirmado — Apartamento ${apartamento}`,
           text:
             `A saída foi confirmada.\n\n` +
