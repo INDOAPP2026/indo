@@ -180,46 +180,61 @@
   </main>
 
   <script>
-    const parametros = new URLSearchParams(window.location.search);
-    const apartamento = parametros.get("apartamento");
-    const unidade = document.getElementById("apartamento");
-    const botao = document.getElementById("confirmar");
-    const mensagem = document.getElementById("message");
+  const parametros = new URLSearchParams(window.location.search);
+  const apartamento = parametros.get("apartamento");
+  const unidade = document.getElementById("apartamento");
+  const botao = document.getElementById("confirmar");
+  const mensagem = document.getElementById("message");
 
-    // Número da CheckLimp com código do país Brasil.
-    const telefoneCheckLimp = "5511998650727";
+  const apartamentoValido =
+    apartamento && /^[a-zA-Z0-9-]{1,20}$/.test(apartamento);
 
-    if (apartamento && /^[a-zA-Z0-9-]{1,20}$/.test(apartamento)) {
-      unidade.textContent = apartamento;
-    } else {
-      unidade.textContent = "Não identificado";
-      botao.disabled = true;
+  if (apartamentoValido) {
+    unidade.textContent = apartamento;
+  } else {
+    unidade.textContent = "Não identificado";
+    botao.disabled = true;
+    mensagem.textContent =
+      "Não foi possível identificar o apartamento.";
+  }
+
+  botao.addEventListener("click", async function () {
+    if (!apartamentoValido) {
       mensagem.textContent =
         "Não foi possível identificar o apartamento.";
+      return;
     }
 
-    botao.addEventListener("click", function () {
-      if (!apartamento || !/^[a-zA-Z0-9-]{1,20}$/.test(apartamento)) {
-        mensagem.textContent =
-          "Não foi possível identificar o apartamento.";
-        return;
+    botao.disabled = true;
+    mensagem.textContent = "Enviando confirmação...";
+
+    try {
+      const resposta = await fetch("/api/confirmar-saida", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          apartamento: apartamento
+        })
+      });
+
+      const resultado = await resposta.json();
+
+      if (!resposta.ok || !resultado.sucesso) {
+        throw new Error(
+          resultado.erro || "Não foi possível enviar a confirmação."
+        );
       }
 
-      const texto =
-        "🚪 INDO - Saída confirmada!\n\n" +
-        "🏢 Apartamento: " + apartamento + "\n" +
-        "📋 Status: liberado para limpeza.\n" +
-        "📲 Aviso gerado pelo sistema INDO.";
-
-      const url =
-        "https://wa.me/" + telefoneCheckLimp +
-        "?text=" + encodeURIComponent(texto);
-
       mensagem.textContent =
-        "Abrindo o WhatsApp para enviar a confirmação...";
+        "Pronto! Nossa equipe de limpeza será avisada.";
+      botao.textContent = "Saída confirmada";
+    } catch (erro) {
+      mensagem.textContent =
+        "Não foi possível confirmar a saída. Tente novamente.";
 
-      window.open(url, "_blank");
-    });
-  </script>
-</body>
-</html>
+      botao.disabled = false;
+    }
+  });
+</script>
